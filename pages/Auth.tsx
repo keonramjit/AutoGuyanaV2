@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import { createUserProfile, registerDealership, getUserProfile } from '../services/dataService';
+import { createUserProfile, registerDealership } from '../services/dataService';
 import { GUYANA_REGIONS } from '../constants';
-import { Building2, UserCircle2, Check, Lock, Mail, ArrowRight, CheckCircle2, Ban } from 'lucide-react';
+import { Building2, UserCircle2, Check, Lock, Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const sleekInputClass = "w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all shadow-sm placeholder-slate-400 font-medium";
 const labelClass = "block text-xs font-bold uppercase text-slate-500 mb-1.5 tracking-wide";
@@ -14,30 +13,14 @@ export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isSuspended, setIsSuspended] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsSuspended(false);
-
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      
-      // Check User Profile Status
-      const profile = await getUserProfile(userCred.user.uid);
-      
-      if (profile?.status === 'suspended') {
-          await signOut(auth);
-          setIsSuspended(true);
-          setError('Your account has been suspended. Please contact support.');
-          return;
-      }
-
+      await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
     } catch (err: any) {
-      console.error(err);
       setError('Invalid email or password.');
     }
   };
@@ -46,11 +29,11 @@ export const Login: React.FC = () => {
     <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 p-4">
       <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl w-full max-w-md border border-slate-100">
         <div className="text-center mb-8">
-           <div className={`h-12 w-12 rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg ${isSuspended ? 'bg-red-500 shadow-red-200' : 'bg-blue-600 shadow-blue-200'}`}>
-              {isSuspended ? <Ban className="text-white h-6 w-6" /> : <Lock className="text-white h-6 w-6" />}
+           <div className="h-12 w-12 bg-blue-600 rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-blue-200">
+              <Lock className="text-white h-6 w-6" />
            </div>
-           <h2 className="text-3xl font-extrabold text-slate-900">{isSuspended ? 'Account Suspended' : 'Welcome Back'}</h2>
-           <p className="text-slate-500 mt-2">{isSuspended ? 'Access to this account has been restricted' : 'Sign in to access your account'}</p>
+           <h2 className="text-3xl font-extrabold text-slate-900">Welcome Back</h2>
+           <p className="text-slate-500 mt-2">Sign in to access your account</p>
         </div>
         
         {error && <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium flex items-center gap-2 border border-red-100"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>{error}</div>}

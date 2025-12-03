@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts';
+import { useAuth } from '../App';
 import { fetchCarsByDealer, createCar, deleteCar, uploadImage, updateDealership, updateCar } from '../services/dataService';
 import { Car } from '../types';
 import { 
@@ -30,7 +30,8 @@ import {
   Camera,
   MapPin,
   Phone,
-  Globe
+  Globe,
+  BarChart3
 } from 'lucide-react';
 import { GUYANA_REGIONS, CAR_MAKES, YEARS, FEATURES_LIST } from '../constants';
 
@@ -390,13 +391,47 @@ export const DealerDashboard: React.FC = () => {
   });
 
   const getAnalytics = () => {
+    // Simulated data for demo
     switch(timeRange) {
-        case '7d': return { views: 432, clicks: 128, messages: 8, trend: '+12%' };
-        case '30d': return { views: 1850, clicks: 540, messages: 35, trend: '+8%' };
-        case 'all': return { views: 12400, clicks: 3200, messages: 210, trend: '' };
+        case '7d': return { views: 432, clicks: 128, messages: 8, trend: '+12%', data: [45, 62, 38, 70, 55, 82, 90] };
+        case '30d': return { views: 1850, clicks: 540, messages: 35, trend: '+8%', data: [65, 59, 80, 81, 56, 55, 40] };
+        case 'all': return { views: 12400, clicks: 3200, messages: 210, trend: '', data: [28, 48, 40, 19, 86, 27, 90] };
     }
   };
   const stats = getAnalytics();
+
+  const renderChart = () => {
+    const data = stats.data; // Array of numbers
+    const max = Math.max(...data);
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    return (
+        <div className="flex items-end justify-between h-48 w-full gap-2 pt-4">
+            {data.map((val, i) => (
+                <div key={i} className="flex flex-col items-center flex-1 h-full justify-end group">
+                    <div className="w-full max-w-[40px] flex gap-1 items-end h-full relative">
+                        {/* Views Bar (Blue) */}
+                        <div 
+                            style={{ height: `${(val / max) * 100}%` }} 
+                            className="w-1/2 bg-blue-600 rounded-t-sm transition-all duration-700 ease-out group-hover:bg-blue-500 relative"
+                        ></div>
+                        {/* Clicks Bar (Gold) */}
+                        <div 
+                             style={{ height: `${(val / max) * 60}%` }} 
+                             className="w-1/2 bg-yellow-400 rounded-t-sm transition-all duration-700 ease-out group-hover:bg-yellow-300 relative"
+                        ></div>
+                        
+                        {/* Tooltip */}
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
+                            {val} Views
+                        </div>
+                    </div>
+                    <span className="text-[10px] text-slate-400 mt-2 font-medium">{days[i]}</span>
+                </div>
+            ))}
+        </div>
+    );
+  };
 
   const sleekInputClass = "w-full bg-white text-slate-900 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all shadow-sm placeholder-slate-400 font-medium";
   const sectionCardClass = "bg-white p-6 md:p-8 rounded-xl border border-slate-100 shadow-sm";
@@ -444,7 +479,7 @@ export const DealerDashboard: React.FC = () => {
         
         {activeTab === 'overview' && (
           <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Overview Content... (Unchanged) */}
+            {/* Overview Content */}
             <div className="flex justify-between items-end">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h1>
@@ -474,17 +509,16 @@ export const DealerDashboard: React.FC = () => {
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                        <TrendingUp className="text-blue-600" /> Engagement Analytics
+                        <BarChart3 className="text-blue-600" /> Engagement Analytics
                     </h3>
+                    <div className="flex items-center gap-4 text-xs font-bold">
+                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-600"></div> Profile Views</div>
+                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-yellow-400"></div> Car Clicks</div>
+                    </div>
                 </div>
                 
-                <div className="h-64 w-full flex flex-col items-center justify-center text-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
-                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 mb-4">
-                         <TrendingUp size={32} />
-                     </div>
-                     <h4 className="text-lg font-bold text-slate-900">Advanced Analytics</h4>
-                     <p className="text-slate-500 max-w-sm mb-4">Detailed insights on views, clicks, and engagement will be available soon.</p>
-                     <span className="bg-blue-100 text-blue-700 font-bold px-4 py-1.5 rounded-full text-sm">Feature Coming Soon</span>
+                <div className="w-full bg-slate-50/30 rounded-xl border border-slate-100 px-4 pb-2">
+                     {renderChart()}
                 </div>
             </div>
           </div>
@@ -689,7 +723,6 @@ export const DealerDashboard: React.FC = () => {
                          <div className={sectionIconClass}><CarFront size={20} /></div>
                          <h3 className={sectionTitleClass}>Vehicle Specifications</h3>
                      </div>
-                     {/* ... (Specs inputs unchanged) ... */}
                      <div className="space-y-6">
                          <div>
                              <label className="label">Listing Title *</label>
@@ -813,15 +846,13 @@ export const DealerDashboard: React.FC = () => {
                      </div>
                  </div>
 
-                 {/* 4. Features - (Unchanged) */}
+                 {/* 4. Features */}
                  <div className={sectionCardClass}>
                      <div className={sectionHeaderClass}>
                          <div className={sectionIconClass}><CheckCircle size={20} /></div>
                          <h3 className={sectionTitleClass}>Vehicle Features</h3>
                      </div>
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                        {/* Reuse the logic from previous steps for feature grids (Safety, Comfort, Interior, Exterior) */}
-                        {/* For brevity, assuming the detailed feature grid code from previous step is preserved here. */}
                         <div>
                             <h4 className="font-bold text-sm text-slate-900 mb-3 pb-2 border-b border-slate-100 uppercase tracking-wide">Safety</h4>
                             <div className="space-y-2">
@@ -888,12 +919,11 @@ export const DealerDashboard: React.FC = () => {
            </div>
         )}
 
-        {/* SETTINGS TAB - Redesigned */}
+        {/* SETTINGS TAB */}
         {activeTab === 'settings' && (
            <div className="max-w-3xl mx-auto animate-in fade-in">
                <h1 className="text-3xl font-bold mb-8 text-slate-900">Dealership Settings</h1>
                <form onSubmit={handleUpdateProfile} className="space-y-8">
-                   
                    {/* Branding Section */}
                    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                        {/* Banner Upload */}

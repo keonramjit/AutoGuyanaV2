@@ -19,7 +19,7 @@ export interface Dealership {
   logoUrl: string;
   bannerUrl?: string;
   address: string;
-  status: 'pending' | 'approved' | 'rejected' | 'suspended';
+  status: 'pending' | 'approved' | 'rejected';
   description?: string;
 }
 

@@ -1,12 +1,11 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './firebase';
 import { getUserProfile, fetchDealership } from './services/dataService';
 import { UserProfile, Dealership } from './types';
 import { Scale, X } from 'lucide-react';
-import { AuthContext, CompareContext } from './contexts';
 
 // Pages
 import { Home } from './pages/Home';
@@ -20,6 +19,27 @@ import { UserProfilePage } from './pages/UserProfile';
 import { ComparePage } from './pages/Compare';
 import { Login, Register } from './pages/Auth';
 import { Layout } from './components/Layout';
+
+// Auth Context
+interface AuthContextType {
+  user: User | null;
+  userProfile: UserProfile | null;
+  dealerProfile: Dealership | null;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType>({ user: null, userProfile: null, dealerProfile: null, loading: true });
+export const useAuth = () => useContext(AuthContext);
+
+// Compare Context
+interface CompareContextType {
+    compareList: string[];
+    addToCompare: (id: string) => void;
+    removeFromCompare: (id: string) => void;
+    isInCompare: (id: string) => boolean;
+}
+const CompareContext = createContext<CompareContextType>({ compareList: [], addToCompare: () => {}, removeFromCompare: () => {}, isInCompare: () => false });
+export const useCompare = () => useContext(CompareContext);
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);

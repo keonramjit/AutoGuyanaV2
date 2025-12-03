@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../contexts';
+import { useAuth } from '../App';
 import { updateUserProfile, fetchCarsByIds, deleteUserData } from '../services/dataService';
 import { Car } from '../types';
 import { CarCard } from '../components/CarCard';

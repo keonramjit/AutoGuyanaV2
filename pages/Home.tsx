@@ -82,7 +82,7 @@ export const Home: React.FC = () => {
             <img 
               src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
               alt="Guyana Drives Hero" 
-              className="w-full h-full object-cover opacity-40 mix-blend-overlay"
+              className="w-full h-full object-cover opacity-40 mix-blend-overlay animate-slow-zoom"
             />
         </div>
         
@@ -201,7 +201,7 @@ export const Home: React.FC = () => {
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{dealer.businessName}</h3>
                 <div className="flex items-center text-slate-500 text-sm mb-4 bg-slate-100 px-3 py-1 rounded-full"><MapPin className="h-3 w-3 mr-1 text-red-500" /> {dealer.region.split('(')[0].trim()}</div>
                 <p className="text-slate-600 text-sm mb-8 line-clamp-2 leading-relaxed">{dealer.description || `Visit ${dealer.businessName} for the best deals in the region.`}</p>
-                <Link to={`/dealership/${dealer.uid}`} className="mt-auto w-full py-3 border-2 border-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">View Inventory</Link>
+                <Link to="/search" className="mt-auto w-full py-3 border-2 border-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">View Inventory</Link>
               </div>
             ))}
           </div>
@@ -248,9 +248,19 @@ export const Home: React.FC = () => {
           66% { box-shadow: 0 0 20px -5px #CE1126; border-color: #CE1126; } /* Red */
           100% { box-shadow: 0 0 20px -5px #009E49; border-color: #009E49; }
         }
+        
+        @keyframes slowZoom {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.1); }
+        }
+        
         .guyana-search-glow {
           animation: guyanaGlow 4s infinite linear;
           transition: all 0.5s ease;
+        }
+        
+        .animate-slow-zoom {
+          animation: slowZoom 20s infinite alternate linear;
         }
       `}</style>
     </div>

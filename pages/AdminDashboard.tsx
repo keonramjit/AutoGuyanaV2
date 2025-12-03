@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { 
   getAllUsers, 
@@ -6,13 +5,12 @@ import {
   fetchCars,
   deleteCar,
   archiveListing,
-  updateUserStatus,
-  updateDealership
+  updateUserStatus
 } from '../services/dataService';
 import { Dealership, UserProfile, Car } from '../types';
 import { 
   Users, CarFront, Building2, 
-  Eye, Archive, Trash2, LayoutDashboard, ShieldCheck, Loader2, TrendingUp, Edit, Ban, CheckCircle
+  Eye, Archive, Trash2, LayoutDashboard, ShieldCheck, Loader2, TrendingUp, Edit
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -69,14 +67,6 @@ export const AdminDashboard: React.FC = () => {
   const handleUserStatusChange = async (uid: string, newStatus: 'active' | 'suspended') => {
      if(window.confirm(`Are you sure you want to ${newStatus === 'active' ? 'activate' : 'suspend'} this user?`)) {
        await updateUserStatus(uid, newStatus);
-       loadData();
-     }
-  };
-
-  const handleDealerStatusChange = async (uid: string, newStatus: 'approved' | 'suspended') => {
-     const action = newStatus === 'approved' ? 'activate' : 'suspend';
-     if(window.confirm(`Are you sure you want to ${action} this dealership? Suspended dealerships are hidden from the public.`)) {
-       await updateDealership(uid, { status: newStatus });
        loadData();
      }
   };
@@ -283,13 +273,9 @@ export const AdminDashboard: React.FC = () => {
                                 {user.role !== 'superadmin' && (
                                     <div className="flex justify-end gap-2">
                                         {user.status === 'suspended' ? (
-                                            <button onClick={() => handleUserStatusChange(user.uid, 'active')} className="flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-lg hover:bg-green-100 border border-green-200 transition-colors">
-                                                <CheckCircle size={12}/> Activate
-                                            </button>
+                                            <button onClick={() => handleUserStatusChange(user.uid, 'active')} className="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-lg hover:bg-green-100 border border-green-200">Activate</button>
                                         ) : (
-                                            <button onClick={() => handleUserStatusChange(user.uid, 'suspended')} className="flex items-center gap-1 px-3 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-lg hover:bg-red-100 border border-red-200 transition-colors">
-                                                <Ban size={12}/> Suspend
-                                            </button>
+                                            <button onClick={() => handleUserStatusChange(user.uid, 'suspended')} className="px-3 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-lg hover:bg-red-100 border border-red-200">Suspend</button>
                                         )}
                                     </div>
                                 )}
@@ -307,9 +293,8 @@ export const AdminDashboard: React.FC = () => {
           <div className="space-y-8 animate-in fade-in">
              {/* Active Dealers */}
              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h2 className="text-lg font-bold text-slate-900">Registered Dealerships</h2>
-                    <span className="text-sm text-slate-500">Total: {allDealerships.filter(d => d.status !== 'pending').length}</span>
+                <div className="p-6 border-b border-slate-100">
+                    <h2 className="text-lg font-bold text-slate-900">Active Dealerships</h2>
                 </div>
                 <div className="overflow-x-auto">
                    <table className="w-full text-left border-collapse">
@@ -319,7 +304,6 @@ export const AdminDashboard: React.FC = () => {
                             <th className="px-6 py-4">Region</th>
                             <th className="px-6 py-4">Contact</th>
                             <th className="px-6 py-4">Status</th>
-                            <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                      </thead>
                      <tbody className="divide-y divide-slate-100">
@@ -332,19 +316,6 @@ export const AdminDashboard: React.FC = () => {
                                     <span className={`text-xs font-bold px-2 py-1 rounded-full uppercase ${dealer.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                         {dealer.status}
                                     </span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <div className="flex justify-end gap-2">
-                                        {dealer.status === 'suspended' ? (
-                                            <button onClick={() => handleDealerStatusChange(dealer.uid, 'approved')} className="flex items-center gap-1 px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-lg hover:bg-green-100 border border-green-200 transition-colors">
-                                                <CheckCircle size={12}/> Activate
-                                            </button>
-                                        ) : (
-                                            <button onClick={() => handleDealerStatusChange(dealer.uid, 'suspended')} className="flex items-center gap-1 px-3 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-lg hover:bg-red-100 border border-red-200 transition-colors">
-                                                <Ban size={12}/> Suspend
-                                            </button>
-                                        )}
-                                    </div>
                                 </td>
                             </tr>
                         ))}

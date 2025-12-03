@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useCompare } from '../contexts';
+import { useCompare } from '../App';
 import { fetchCarsByIds } from '../services/dataService';
 import { Car } from '../types';
 import { Link } from 'react-router-dom';

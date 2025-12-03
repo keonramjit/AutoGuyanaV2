@@ -1,8 +1,7 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Car, ShieldCheck, Briefcase, LogOut, ChevronDown, User, Heart, LayoutDashboard } from 'lucide-react';
-import { useAuth } from '../contexts';
+import { useAuth } from '../App';
 import { auth } from '../firebase';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

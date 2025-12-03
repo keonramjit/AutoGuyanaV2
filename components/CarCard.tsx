@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Car } from '../types';
 import { MapPin, Gauge, Settings, Fuel, Car as CarIcon, Heart, Scale, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth, useCompare } from '../contexts';
+import { useAuth, useCompare } from '../App';
 import { toggleFavorite } from '../services/dataService';
 
 interface CarCardProps {
