@@ -1,0 +1,7 @@
+{
+  "name": "AutoGuyana",
+  "description": "A premier dealership marketplace for Guyana connecting car buyers with verified dealerships.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
